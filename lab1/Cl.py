@@ -1,11 +1,49 @@
+import re
+
 class Client:
 
     def __init__(self, surname, name, patronymic, address, phone):
-        self.surname = surname
-        self.name = name
-        self.patronymic = patronymic
-        self.address = address
-        self.phone = phone
+        self.surname = self.validate_surname(surname)
+        self.name = self.validate_name(name)
+        self.patronymic = self.validate_patronymic(patronymic)
+        self.phone = self.validate_phone(phone)
+        self.address = self.validate_address(address)
+
+    @staticmethod
+    def validate_surname(value):
+        if not value.strip():
+            raise ValueError("surname cannot be empty.")
+        if not value.isalpha():
+            raise ValueError("surname must contain only letters.")
+        return value
+        
+    @staticmethod
+    def validate_name(value):
+        if not value.strip():
+            raise ValueError("name cannot be empty.")
+        if not value.isalpha():
+            raise ValueError("name must contain only letters.")
+        return value
+
+    @staticmethod
+    def validate_patronymic(value):
+        if value.strip() and not value.isalpha():
+            raise ValueError("patronymic must contain only letters if provided.")
+        return value
+
+    @staticmethod
+    def validate_phone(value):
+        if not value.strip():
+            raise ValueError("Phone number cannot be empty.")
+        if not re.match(r'^\+\d{1,3}-\d{3}-\d{3}-\d{4}$', value):
+            raise ValueError("Phone number must be in the format +XXX-XXX-XXX-XXXX.")
+        return value
+    
+    @staticmethod
+    def validate_address(value):
+        if not value.strip():
+            raise ValueError("Address cannot be empty.")
+        return value
 
    @property
     def surname(self):
