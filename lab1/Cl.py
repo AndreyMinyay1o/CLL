@@ -1,10 +1,12 @@
 import re
 import json
 
+
 class Client:
 
+
     def __init__(self, surname, name, patronymic, address, phone):
-       self.surname = self.validate_value(surname, "Surname", is_required=True, only_letters=True)
+        self.surname = self.validate_value(surname, "Surname", is_required=True, only_letters=True)
         self.name = self.validate_value(name, "Name", is_required=True, only_letters=True)
         self.patronymic = self.validate_value(patronymic, "Patronymic", is_required=False, only_letters=True)
         self.address = self.validate_value(address, "Address", is_required=True)
@@ -12,6 +14,7 @@ class Client:
 
     @staticmethod
     def validate_value(value, field_name, is_required=True, only_letters=False, regex=None):
+
         if is_required and not value.strip():
             raise ValueError(f"{field_name} cannot be empty.")
 
@@ -23,11 +26,9 @@ class Client:
 
         return value
 
- @classmethod
+    @classmethod
     def from_string(cls, data_string, delimiter=","):
-        """
-        Создает экземпляр из строки, где значения разделены заданным разделителем.
-        """
+
         fields = data_string.split(delimiter)
         if len(fields) != 5:
             raise ValueError("Data string must contain exactly 5 fields separated by the delimiter.")
@@ -47,6 +48,7 @@ class Client:
 
     @classmethod
     def from_json(cls, json_string):
+
         try:
             data = json.loads(json_string)
         except json.JSONDecodeError as e:
@@ -74,7 +76,7 @@ class Client:
         )
 
     def __str__(self):
-        
+
         return (
             f"Full Details:\n"
             f"Surname: {self.surname}\n"
@@ -100,19 +102,7 @@ class Client:
                 self.phone == other.phone
         )
 
-class ShortClient:
-    def __init__(self, client):
-        if not isinstance(client, Client):
-            raise ValueError("Expected instance of Client.")
-        
-        self.name = client.name
-        self.surname = client.surname
-    def __str__(self):
-        return f"{self.name} {self.surname}, "
-    def __repr__(self):
-        return f"ShortClient({self.name} {self.surname},)"
-        
-   @property
+    @property
     def surname(self):
         return self.__surname
 
@@ -152,8 +142,31 @@ class ShortClient:
     def phone(self, value):
         self.__phone = value
 
-print(client1 == client2) 
-client = Client.from_string("Minyaylo, Andrey, Andreevich, +7-900-000-5150, stavropolskaya 149")
-short_client = ShortClient(client)
-print(short_client)
-print(repr(short_client)) 
+
+class ShortClient:
+    def __init__(self, base_client):
+        if not isinstance(base_client, Client):
+            raise ValueError("Expected an instance of Client.")
+        self._base = base_client
+
+    @property
+    def surname(self):
+        return self._base.surname
+
+    @property
+    def name(self):
+        return self._base.name
+
+    def __str__(self):
+        return f"{self.name} {self.surname}"
+
+    def __repr__(self):
+        return f"ShortClient({self.name} {self.surname})"
+
+
+if __name__ == "__main__":
+    client = Client.from_string("Minyaylo, Andrey, Andreevich, stavropskaya 149, +7-900-000-5150")
+    print(client)
+
+    short_client = ShortClient(client)
+    print(short_client)
