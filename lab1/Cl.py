@@ -47,9 +47,6 @@ class Client:
 
     @classmethod
     def from_json(cls, json_string):
-        """
-        Создает экземпляр из JSON-строки.
-        """
         try:
             data = json.loads(json_string)
         except json.JSONDecodeError as e:
@@ -76,7 +73,33 @@ class Client:
             phone=validated_data["phone"]
         )
 
+    def __str__(self):
+        
+        return (
+            f"Full Details:\n"
+            f"Surname: {self.surname}\n"
+            f"Name: {self.name}\n"
+            f"Patronymic: {self.patronymic}\n"
+            f"Address: {self.address}\n"
+            f"Phone: {self.phone}"
+        )
 
+    def __repr__(self):
+
+        return f"Client({self.name} {self.surname})"
+
+    def __eq__(self, other):
+
+        if not isinstance(other, Client):
+            return NotImplemented
+        return (
+                self.surname == other.surname and
+                self.name == other.name and
+                self.patronymic == other.patronymic and
+                self.address == other.address and
+                self.phone == other.phone
+        )
+        
    @property
     def surname(self):
         return self.__surname
