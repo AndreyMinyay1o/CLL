@@ -3,46 +3,23 @@ import re
 class Client:
 
     def __init__(self, surname, name, patronymic, address, phone):
-        self.surname = self.validate_surname(surname)
-        self.name = self.validate_name(name)
-        self.patronymic = self.validate_patronymic(patronymic)
-        self.phone = self.validate_phone(phone)
-        self.address = self.validate_address(address)
+       self.surname = self.validate_value(surname, "Surname", is_required=True, only_letters=True)
+        self.name = self.validate_value(name, "Name", is_required=True, only_letters=True)
+        self.patronymic = self.validate_value(patronymic, "Patronymic", is_required=False, only_letters=True)
+        self.address = self.validate_value(address, "Address", is_required=True)
+        self.phone = self.validate_value(phone, "Phone", is_required=True, regex=r'^\+\d{1,3}-\d{3}-\d{3}-\d{4}$')
 
     @staticmethod
-    def validate_surname(value):
-        if not value.strip():
-            raise ValueError("surname cannot be empty.")
-        if not value.isalpha():
-            raise ValueError("surname must contain only letters.")
-        return value
-        
-    @staticmethod
-    def validate_name(value):
-        if not value.strip():
-            raise ValueError("name cannot be empty.")
-        if not value.isalpha():
-            raise ValueError("name must contain only letters.")
-        return value
+    def validate_value(value, field_name, is_required=True, only_letters=False, regex=None):
+        if is_required and not value.strip():
+            raise ValueError(f"{field_name} cannot be empty.")
 
-    @staticmethod
-    def validate_patronymic(value):
-        if value.strip() and not value.isalpha():
-            raise ValueError("patronymic must contain only letters if provided.")
-        return value
+        if only_letters and not value.replace(' ', '').isalpha():
+            raise ValueError(f"{field_name} must contain only letters.")
 
-    @staticmethod
-    def validate_phone(value):
-        if not value.strip():
-            raise ValueError("Phone number cannot be empty.")
-        if not re.match(r'^\+\d{1,3}-\d{3}-\d{3}-\d{4}$', value):
-            raise ValueError("Phone number must be in the format +XXX-XXX-XXX-XXXX.")
-        return value
-    
-    @staticmethod
-    def validate_address(value):
-        if not value.strip():
-            raise ValueError("Address cannot be empty.")
+        if regex and not re.match(regex, value):
+            raise ValueError(f"{field_name} is invalid. Expected format: {regex}")
+
         return value
 
    @property
