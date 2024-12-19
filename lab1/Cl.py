@@ -99,6 +99,18 @@ class Client:
                 self.address == other.address and
                 self.phone == other.phone
         )
+
+class ShortClient:
+    def __init__(self, client):
+        if not isinstance(client, Client):
+            raise ValueError("Expected instance of Client.")
+        
+        self.name = client.name
+        self.surname = client.surname
+    def __str__(self):
+        return f"{self.name} {self.surname}, "
+    def __repr__(self):
+        return f"ShortClient({self.name} {self.surname},)"
         
    @property
     def surname(self):
@@ -139,3 +151,9 @@ class Client:
     @phone.setter
     def phone(self, value):
         self.__phone = value
+
+print(client1 == client2) 
+client = Client.from_string("Minyaylo, Andrey, Andreevich, +7-900-000-5150, stavropolskaya 149")
+short_client = ShortClient(client)
+print(short_client)
+print(repr(short_client)) 
