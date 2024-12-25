@@ -159,6 +159,90 @@ class ClientRepJson:
                      default=0)
         return max_id + 1
 
+class ClientRepYaml:
+    def __init__(self, file_name):
+        self.file_name = file_name
+        self.clients = self.read_all()
+
+    def read_all(self):
+        try:
+            with open(self.file_name, 'r') as file:
+                data = yaml.safe_load(file)
+                if data is None:
+                    print(f"Warning: The YAML file is empty or invalid. Returning empty client list.")
+                    return []
+                clients = []
+                for client_data in data:
+                    client_id = client_data.get("client_id", None)
+                    client = Client(
+                        surname=client_data["surname"],
+                        name=client_data["name"],
+                        patronymic=client_data.get("patronymic", ""),
+                        address=client_data["address"],
+                        phone=client_data["phone"],
+                        client_id=client_id
+                    )
+                    clients.append(client)
+                return clients
+        except FileNotFoundError:
+            print(f"Error: The file '{self.file_name}' was not found. Returning empty client list.")
+            return []
+        except yaml.YAMLError as e:
+            print(f"Error reading YAML file: {e}")
+            return []
+
+    def save_all(self):
+        data = []
+        for client in self.clients:
+            client_data = client.to_dict()
+            if client_data["client_id"] is None:
+                client_data["client_id"] = self.get_new_client_id()
+            data.append(client_data)
+        with open(self.file_name, 'w') as file:
+            yaml.safe_dump(data, file, default_flow_style=False)
+
+    def get_by_id(self, client_id):
+        for client in self.clients:
+            if client.get_client_id() == client_id:
+                return client
+        raise ValueError(f"Client with ID {client_id} not found")
+
+    def get_k_n_short_list(self, k, n):
+        start = (k - 1) * n
+        end = start + n
+        return self.clients[start:end]
+
+    def sort_by_field(self, field="client_id"):
+        self.clients.sort(key=lambda client: getattr(client, field))
+
+    def add_client(self, surname, name, patronymic, address, phone):
+        new_id = self.get_new_client_id()
+        new_client = Client(surname, name, patronymic, address, phone, new_id)
+        self.clients.append(new_client)
+        self.save_all()
+
+    def replace_by_id(self, client_id, new_client):
+        for i, client in enumerate(self.clients):
+            if client.get_client_id() == client_id:
+                self.clients[i] = new_client
+                self.save_all()
+                return True
+        return False
+
+    def delete_by_id(self, client_id):
+        self.clients = [client for client in self.clients if client.get_client_id() != client_id]
+        self.save_all()
+
+    def get_count(self):
+        return len(self.clients)
+
+    def get_new_client_id(self):
+        max_id = max([client.get_client_id() for client in self.clients if client.get_client_id() is not None],
+                     default=0)
+        return max_id + 1
+
+
+
 f __name__ == "__main__":
     client_rep_json = ClientRepJson('clients.json')
 
@@ -169,4 +253,17 @@ f __name__ == "__main__":
         print(client)
     except ValueError as e:
         print(e)
+
+    client_rep_yaml = ClientRepYaml('clients.yaml')
+
+    client_rep_yaml.add_client('Minyaylo', 'Akim', 'Andreevich', 'blagoeva 12', '+7-900-001-1506')
+
+    clients = client_rep_yaml.read_all()
+    for client in clients:
+        print(client)
+
+    client_rep_yaml.sort_by_field('name')
+    print("Sorted clients by name:")
+    for client in client_rep_yaml.read_all():
+        print(client)
 
