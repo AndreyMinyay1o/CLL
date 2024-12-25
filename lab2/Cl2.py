@@ -351,7 +351,7 @@ class ClientRepDBAdapter:
         self.client_rep_db.close()
 
 
-f __name__ == "__main__":
+if __name__ == "__main__":
     client_rep_json = ClientRepJson('clients.json')
 
     client_rep_json.add_client("Minyaylo", "Andrey", "Andreevich", "stavropskaya 149", "+7-900-000-5150")
