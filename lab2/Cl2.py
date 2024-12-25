@@ -243,10 +243,10 @@ class ClientRepYaml:
         return max_id + 1
 
 class ClientRepDB:
-    _instance = None  # Переменная для хранения единственного экземпляра класса
+    _instance = None 
 
     def __new__(cls, db_name, user, password, host="localhost", port="5432"):
-        if cls._instance is None:  # Если экземпляр еще не создан, создаем его
+        if cls._instance is None: 
             cls._instance = super(ClientRepDB, cls).__new__(cls)
             cls._instance.db_name = db_name
             cls._instance.user = user
@@ -255,7 +255,7 @@ class ClientRepDB:
             cls._instance.port = port
             cls._instance.conn = cls._instance.connect_to_db()
             cls._instance.create_table()
-        return cls._instance  # Возвращаем уже созданный экземпляр
+        return cls._instance 
 
     def connect_to_db(self):
         try:
@@ -349,6 +349,9 @@ f __name__ == "__main__":
     for client in client_rep_yaml.read_all():
         print(client)
 
+    db_name = 'Clients'  
+    user = 'blanc'    
+    password = '1'
     client_rep_db = ClientRepDB(db_name, user, password)
 
     client_id = client_rep_db.add_client(
