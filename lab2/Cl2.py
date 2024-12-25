@@ -1,6 +1,7 @@
 import re
 import os
 import json
+import yaml
 
 class Client:
     def __init__(self, surname, name, patronymic, address, phone, client_id=None):
@@ -157,3 +158,15 @@ class ClientRepJson:
         max_id = max([client.get_client_id() for client in self.clients if client.get_client_id() is not None],
                      default=0)
         return max_id + 1
+
+f __name__ == "__main__":
+    client_rep_json = ClientRepJson('clients.json')
+
+    client_rep_json.add_client("Minyaylo", "Andrey", "Andreevich", "stavropskaya 149", "+7-900-000-5150")
+
+    try:
+        client = client_rep_json.get_by_id(1)
+        print(client)
+    except ValueError as e:
+        print(e)
+
