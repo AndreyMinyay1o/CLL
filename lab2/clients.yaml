@@ -1,0 +1,24 @@
+- address: blagoeva 12
+  client_id: 1
+  name: Frim
+  patronymic: Andreevich
+  phone: +7-900-001-1506
+  surname: Minyaylo
+- address: blagoeva 12
+  client_id: 2
+  name: Frim
+  patronymic: Andreevich
+  phone: +7-900-001-1506
+  surname: Minyaylo
+- address: blagoeva 12
+  client_id: 3
+  name: Frim
+  patronymic: Andreevich
+  phone: +7-900-001-1506
+  surname: Minyaylo
+- address: blagoeva 12
+  client_id: 4
+  name: Akim
+  patronymic: Andreevich
+  phone: +7-900-001-1506
+  surname: Minyaylo

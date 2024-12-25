@@ -1,0 +1,34 @@
+[
+    {
+        "surname": "Minyaylo",
+        "name": "Andrey",
+        "patronymic": "Andreevich",
+        "address": "stavropskaya 149",
+        "phone": "+7-900-000-5150",
+        "client_id": 1
+    },
+    {
+        "surname": "Minyaylo",
+        "name": "Andrey",
+        "patronymic": "Andreevich",
+        "address": "stavropskaya 149",
+        "phone": "+7-900-000-5150",
+        "client_id": 2
+    },
+    {
+        "surname": "Minyaylo",
+        "name": "Andrey",
+        "patronymic": "Andreevich",
+        "address": "stavropskaya 149",
+        "phone": "+7-900-000-5150",
+        "client_id": 3
+    },
+    {
+        "surname": "Minyaylo",
+        "name": "Andrey",
+        "patronymic": "Andreevich",
+        "address": "stavropskaya 149",
+        "phone": "+7-900-000-5150",
+        "client_id": 4
+    }
+]
