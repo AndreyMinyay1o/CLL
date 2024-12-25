@@ -2,6 +2,7 @@ import re
 import os
 import json
 import yaml
+import psycopg2
 
 class Client:
     def __init__(self, surname, name, patronymic, address, phone, client_id=None):
@@ -241,6 +242,83 @@ class ClientRepYaml:
                      default=0)
         return max_id + 1
 
+class ClientRepDB:
+    def __init__(self, db_name, user, password, host="localhost", port="5432"):
+        self.db_name = db_name
+        self.user = user
+        self.password = password
+        self.host = host
+        self.port = port
+        self.conn = self.connect_to_db()
+        self.create_table()
+
+    def connect_to_db(self):
+        try:
+            return psycopg2.connect(
+                dbname=self.db_name, user=self.user, password=self.password, host=self.host, port=self.port
+            )
+        except Exception as e:
+            print(f"Error connecting to database: {e}")
+            raise
+
+    def create_table(self):
+        query = """
+        CREATE TABLE IF NOT EXISTS clients (
+            client_id SERIAL PRIMARY KEY,
+            surname TEXT NOT NULL,
+            name TEXT NOT NULL,
+            patronymic TEXT,
+            address TEXT NOT NULL,
+            phone TEXT NOT NULL
+        );
+        """
+        with self.conn.cursor() as cursor:
+            cursor.execute(query)
+            self.conn.commit()
+
+    def read_all(self):
+        query = "SELECT * FROM clients"
+        with self.conn.cursor() as cursor:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            clients = [
+                Client(surname=row[1], name=row[2], patronymic=row[3], address=row[4], phone=row[5], client_id=row[0])
+                for row in rows
+            ]
+        return clients
+
+    def get_by_id(self, client_id):
+        query = "SELECT * FROM clients WHERE client_id = %s"
+        with self.conn.cursor() as cursor:
+            cursor.execute(query, (client_id,))
+            row = cursor.fetchone()
+            if row:
+                return Client(surname=row[1], name=row[2], patronymic=row[3], address=row[4], phone=row[5], client_id=row[0])
+            else:
+                raise ValueError(f"Client with ID {client_id} not found")
+
+    def add_client(self, surname, name, patronymic, address, phone):
+        query = "INSERT INTO clients (surname, name, patronymic, address, phone) VALUES (%s, %s, %s, %s, %s) RETURNING client_id"
+        with self.conn.cursor() as cursor:
+            cursor.execute(query, (surname, name, patronymic, address, phone))
+            client_id = cursor.fetchone()[0]
+            self.conn.commit()
+        return client_id
+
+    def sort_by_field(self, field="surname"):
+        query = f"SELECT * FROM clients ORDER BY {field}"
+        with self.conn.cursor() as cursor:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            clients = [
+                Client(surname=row[1], name=row[2], patronymic=row[3], address=row[4], phone=row[5], client_id=row[0])
+                for row in rows
+            ]
+        return clients
+
+    def close(self):
+        if self.conn:
+            self.conn.close()
 
 
 f __name__ == "__main__":
@@ -267,3 +345,31 @@ f __name__ == "__main__":
     for client in client_rep_yaml.read_all():
         print(client)
 
+    client_rep_db = ClientRepDB(db_name, user, password)
+
+    client_id = client_rep_db.add_client(
+        surname="Minyaylo",
+        name="Andrey",
+        patronymic="Andreevich",
+        address="stavropolskaya 149",
+        phone="+7-900-000-5150"
+    )
+    print(f"Новый клиент добавлен с ID: {client_id}")
+
+    clients = client_rep_db.read_all()
+    print("Список клиентов:")
+    for client in clients:
+        print(client)
+
+    try:
+        client = client_rep_db.get_by_id(client_id)
+        print(f"Клиент с ID {client_id}: {client}")
+    except ValueError as e:
+        print(e)
+
+    sorted_clients = client_rep_db.sort_by_field(field="surname")
+    print("Клиенты, отсортированные по фамилии:")
+    for client in sorted_clients:
+        print(client)
+
+    client_rep_db.close()
