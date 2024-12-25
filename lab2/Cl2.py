@@ -325,6 +325,32 @@ class ClientRepDB:
         if self.conn:
             self.conn.close()
 
+class ClientRepDBAdapter:
+    def __init__(self, db_name, user, password, host="localhost", port="5432"):
+        self.client_rep_db = ClientRepDB(db_name, user, password, host, port)
+
+    def read_all(self):
+        return self.client_rep_db.read_all()
+
+    def get_by_id(self, client_id):
+        return self.client_rep_db.get_by_id(client_id)
+
+    def add_client(self, surname, name, patronymic, address, phone):
+        return self.client_rep_db.add_client(surname, name, patronymic, address, phone)
+
+    def sort_by_field(self, field="surname"):
+        return self.client_rep_db.sort_by_field(field)
+
+    def delete_by_id(self, client_id):
+        query = "DELETE FROM clients WHERE client_id = %s"
+        with self.client_rep_db.conn.cursor() as cursor:
+            cursor.execute(query, (client_id,))
+            self.client_rep_db.conn.commit()
+
+    def close(self):
+        self.client_rep_db.close()
+
+
 f __name__ == "__main__":
     client_rep_json = ClientRepJson('clients.json')
 
@@ -349,12 +375,13 @@ f __name__ == "__main__":
     for client in client_rep_yaml.read_all():
         print(client)
 
-    db_name = 'Clients'  
-    user = 'blanc'    
+    db_name = 'Clients'
+    user = 'blanc'
     password = '1'
-    client_rep_db = ClientRepDB(db_name, user, password)
 
-    client_id = client_rep_db.add_client(
+    client_rep_db_adapter = ClientRepDBAdapter(db_name, user, password)
+
+    client_id = client_rep_db_adapter.add_client(
         surname="Minyaylo",
         name="Andrey",
         patronymic="Andreevich",
@@ -363,20 +390,21 @@ f __name__ == "__main__":
     )
     print(f"Новый клиент добавлен с ID: {client_id}")
 
-    clients = client_rep_db.read_all()
+    clients = client_rep_db_adapter.read_all()
     print("Список клиентов:")
     for client in clients:
         print(client)
 
     try:
-        client = client_rep_db.get_by_id(client_id)
+        client = client_rep_db_adapter.get_by_id(client_id)
         print(f"Клиент с ID {client_id}: {client}")
     except ValueError as e:
         print(e)
 
-    sorted_clients = client_rep_db.sort_by_field(field="surname")
+    sorted_clients = client_rep_db_adapter.sort_by_field(field="surname")
     print("Клиенты, отсортированные по фамилии:")
     for client in sorted_clients:
         print(client)
 
-    client_rep_db.close()
+    client_rep_db_adapter.delete_by_id(client_id)
+   
