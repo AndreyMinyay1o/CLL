@@ -243,14 +243,19 @@ class ClientRepYaml:
         return max_id + 1
 
 class ClientRepDB:
-    def __init__(self, db_name, user, password, host="localhost", port="5432"):
-        self.db_name = db_name
-        self.user = user
-        self.password = password
-        self.host = host
-        self.port = port
-        self.conn = self.connect_to_db()
-        self.create_table()
+    _instance = None  # Переменная для хранения единственного экземпляра класса
+
+    def __new__(cls, db_name, user, password, host="localhost", port="5432"):
+        if cls._instance is None:  # Если экземпляр еще не создан, создаем его
+            cls._instance = super(ClientRepDB, cls).__new__(cls)
+            cls._instance.db_name = db_name
+            cls._instance.user = user
+            cls._instance.password = password
+            cls._instance.host = host
+            cls._instance.port = port
+            cls._instance.conn = cls._instance.connect_to_db()
+            cls._instance.create_table()
+        return cls._instance  # Возвращаем уже созданный экземпляр
 
     def connect_to_db(self):
         try:
@@ -319,7 +324,6 @@ class ClientRepDB:
     def close(self):
         if self.conn:
             self.conn.close()
-
 
 f __name__ == "__main__":
     client_rep_json = ClientRepJson('clients.json')
