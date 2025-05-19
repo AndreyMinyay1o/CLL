@@ -1,0 +1,20 @@
+
+        <HTML>
+        <HEAD>
+            <TITLE>Мои друзья</TITLE>
+            <style>
+                body {
+                    background-image: url('D:/рр/sand-dunes-white-5120x2880-21843.jpg');
+                    background-size: cover;
+                    background-position: center;
+                }
+            </style>
+        </HEAD>
+        <BODY>
+            <H1 align="center">Мои друзья</H1>
+            <p>Мои друзья очень добрые и справедливые. Они занимаются спортом и помогают пожилым людям.</p>
+            <p> <img src="D:/рр/MV5BOTU2YmM5ZjctOGVlMC00YTczLTljM2MtYjhlNGI5YWMyZjFkXkEyXkFqcGc@._V1_.jpg" alt="Это они" width="300" height="300"></p>
+            <p> <a href="index.html">На главную</a> </p>
+        </BODY>
+        </HTML>
+    

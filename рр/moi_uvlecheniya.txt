@@ -1,0 +1,20 @@
+
+        <HTML>
+        <HEAD>
+            <TITLE>Мои увлечения</TITLE>
+            <style>
+                body {
+                    background-image: url('D:/рр/sand-dunes-white-5120x2880-21843.jpg');
+                    background-size: cover;
+                    background-position: center;
+                }
+            </style>
+        </HEAD>
+        <BODY>
+            <H1 align="center">Мои увлечения</H1>
+            <p>Я занимаюсь хобихорсингом, хожу в школу, читаю книги и собираю подписи футболистов Реал Мадрид.</p>
+             <p> <img src="D:/рр/i.jpg" alt="Это они" width="300" height="300"></p>
+            <p> <a href="index.html">На главную</a> </p>
+        </BODY>
+        </HTML>
+    

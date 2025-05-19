@@ -1,0 +1,20 @@
+
+        <HTML>
+        <HEAD>
+            <TITLE>О себе</TITLE>
+            <style>
+                body {
+                    background-image: url('D:/рр/sand-dunes-white-5120x2880-21843.jpg');
+                    background-size: cover;
+                    background-position: center;
+                }
+            </style>
+        </HEAD>
+        <BODY>
+            <H1 align="center">О себе</H1>
+            <p>Меня зовут Аким. Мне 15 лет, занимаюсь хобихорсингом, очень люблю маму и её еду, а ещё я учусь в школе.</p>
+            <p> <img src="D:/рр/photo_2025-05-19_05-15-43.jpg" alt="Это они" width="300" height="300"></p>
+            <p> <a href="index.html">На главную</a> </p>
+        </BODY>
+        </HTML>
+    
